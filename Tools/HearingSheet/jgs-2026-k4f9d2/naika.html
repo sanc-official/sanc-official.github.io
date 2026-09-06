@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<title>内科ページ 掲載内容 記入シート（荒井先生用）</title>
+<style>
+  :root{
+    --pink:#E5A9C0;
+    --pink-dark:#D488A5;
+    --green:#8AC5A5;
+    --green-dark:#5FA483;
+    --bg:#F7F5F3;
+    --card:#FFFFFF;
+    --border:#E4DFDA;
+    --text:#2E2A28;
+    --sub:#706A66;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;max-width:100%;overflow-x:hidden;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:-apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", sans-serif;
+    font-size:16px;
+    line-height:1.8;
+  }
+  .wrap{max-width:760px;margin:0 auto;padding:0 16px;}
+
+  /* header */
+  .topbar{
+    position:sticky; top:0; z-index:50;
+    background:#fff;
+    border-bottom:2px solid var(--pink);
+    padding:10px 16px;
+  }
+  .topbar-inner{max-width:760px;margin:0 auto;}
+  .topbar-title{font-size:14px;font-weight:700;color:#444;margin-bottom:6px;}
+  .progress-row{display:flex;align-items:center;gap:10px;font-size:13px;color:#555;flex-wrap:wrap;}
+  .progress-track{flex:1;min-width:80px;height:6px;background:#eee;border-radius:3px;overflow:hidden;}
+  .progress-fill{height:100%;background:linear-gradient(90deg,var(--pink),var(--green));width:0%;transition:width .3s;}
+  .save-notice{font-size:12px;color:var(--green-dark);white-space:nowrap;}
+
+  /* intro / banners */
+  .intro{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin:16px 0;}
+  .intro p{margin:0 0 10px;}
+  .intro p:last-child{margin-bottom:0;}
+  .intro .lead{font-weight:700;color:var(--pink-dark);}
+  .restore-banner{
+    display:none;
+    background:#EEF7F1;border:1px solid var(--green);color:var(--green-dark);
+    border-radius:10px;padding:12px 16px;margin:16px 0;font-size:14px;font-weight:700;
+  }
+
+  /* sections */
+  h2.section-title{
+    font-size:17px;
+    border-left:5px solid var(--pink);
+    padding-left:10px;
+    margin:32px 0 4px;
+  }
+  .section-desc{color:var(--sub);font-size:14px;margin:0 0 14px;}
+
+  .q-block{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:16px;
+    margin-bottom:12px;
+  }
+  .q-title{font-weight:700;font-size:16px;margin-bottom:10px;}
+  .q-hint{color:var(--sub);font-size:13.5px;margin:-4px 0 10px;}
+
+  .options{display:flex;flex-direction:column;gap:8px;}
+  .options label{
+    display:flex;align-items:flex-start;gap:10px;
+    min-height:44px;
+    padding:10px 12px;
+    border:1px solid #eee;
+    border-radius:8px;
+    cursor:pointer;
+  }
+  .options label:has(input:checked){
+    border-color:var(--pink);
+    background:#FCF3F6;
+  }
+  .options input[type="radio"],.options input[type="checkbox"]{
+    width:19px;height:19px;flex:none;margin-top:2px;accent-color:var(--pink-dark);
+  }
+
+  textarea{
+    width:100%;
+    min-height:64px;
+    padding:10px 12px;
+    border:1px solid #ddd;
+    border-radius:8px;
+    font-family:inherit;
+    font-size:16px;
+    line-height:1.7;
+    resize:vertical;
+    margin-top:10px;
+    background:#FCFCFB;
+  }
+  textarea.js-primary{min-height:90px;background:#fff;}
+  textarea::placeholder{color:#B3ADA8;}
+
+  .btn-row{display:flex;gap:10px;margin:24px 0;flex-wrap:wrap;}
+  button{
+    font-family:inherit;font-size:16px;font-weight:700;
+    border-radius:8px;padding:14px 20px;cursor:pointer;
+  }
+  .btn-primary{background:var(--pink-dark);color:#fff;border:none;flex:1;min-width:180px;}
+  .btn-secondary{background:#fff;color:#666;border:1px solid #ccc;}
+  .btn-danger{background:#fff;color:#b23b3b;border:1px solid #e3b3b3;}
+
+  .copy-section{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;margin:16px 0;}
+  .copy-section h3{margin:0 0 8px;font-size:15px;}
+  .copy-section p{color:var(--sub);font-size:13.5px;margin:0 0 10px;}
+  #copyOutput{
+    width:100%;min-height:220px;
+    font-family:ui-monospace,Menlo,Consolas,monospace;
+    font-size:12.5px;line-height:1.6;
+    white-space:pre-wrap;
+    background:#FAFAF8;
+    color:#444;
+  }
+  .toast{
+    display:none;
+    background:var(--green-dark);color:#fff;
+    border-radius:8px;padding:10px 14px;font-size:14px;font-weight:700;
+    margin-top:10px;
+  }
+
+  .submit-section{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;margin:16px 0;}
+  .submit-section h3{margin:0 0 8px;font-size:15px;}
+  .submit-section p{color:var(--sub);font-size:13.5px;margin:0 0 10px;}
+  .submit-status{font-size:14px;font-weight:700;margin-top:10px;min-height:1.4em;}
+  .submit-status.success{color:var(--green-dark);}
+  .submit-status.error{color:#b23b3b;}
+  .doc-link-box{
+    display:none;margin-top:12px;font-size:14px;
+    background:#FCF3F6;border:1px solid var(--pink);border-radius:8px;padding:12px 14px;
+  }
+  .doc-link-box p{margin:0 0 8px;color:var(--text);font-size:13.5px;}
+  .doc-link-box p:last-child{margin-bottom:0;}
+  .doc-link-box a{color:var(--pink-dark);font-weight:700;word-break:break-all;}
+
+  footer{color:var(--sub);font-size:12.5px;text-align:center;padding:24px 0 40px;}
+
+  @media print{
+    .topbar,.btn-row,.copy-section,.submit-section,.restore-banner{display:none !important;}
+    body{background:#fff;}
+    .q-block{border:1px solid #bbb;break-inside:avoid;}
+    .options label:has(input:checked){background:#f0f0f0;border-color:#999;}
+    a{color:inherit;text-decoration:none;}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="topbar-title">内科ページ 掲載内容 記入シート（荒井先生用）</div>
+    <div class="progress-row">
+      <span id="progressText">回答済み 0 / 0 問</span>
+      <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+      <span class="save-notice" id="saveNotice"></span>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <div class="intro">
+    <p class="lead">先生が今のホームページに書かれている解説は、そのまま新しいサイトへお引越しできます。一から書き直していただく必要はありません。</p>
+    <p>このシートは「書いていただく」ものではなく、基本的には「選んでいただく」ためのものです。所要時間の目安は15〜20分です。</p>
+    <p><strong>全部埋めなくて大丈夫です。分かるところだけで結構です。</strong>途中で閉じても入力は自動で保存されるので、続きから再開できます。</p>
+  </div>
+
+  <div class="restore-banner" id="restoreBanner">前回の続きから表示しています。</div>
+
+  <form id="mainForm">
+
+    <!-- 1 -->
+    <h2 class="section-title">1. いまの解説文の引き継ぎ</h2>
+    <p class="section-desc">今のホームページに載っている10本の解説文について、それぞれどうするかをお選びください。迷った場合は初期設定の「そのまま載せる」のままで結構です。</p>
+
+    <div class="q-block" data-label="高血圧症の解説文">
+      <div class="q-title">高血圧症</div>
+      <div class="options">
+        <label><input type="radio" name="q1-1" class="js-primary" value="そのまま載せる" checked> そのまま載せる</label>
+        <label><input type="radio" name="q1-1" class="js-primary" value="少し書き直したい"> 少し書き直したい</label>
+        <label><input type="radio" name="q1-1" class="js-primary" value="今回は載せない"> 今回は載せない</label>
+        <label><input type="radio" name="q1-1" class="js-primary" value="わからない・相談したい"> わからない・相談したい</label>
+      </div>
+      <textarea class="js-note" name="q1-1-note" placeholder="任意メモ（書き直したい点など。空欄でOK）"></textarea>
+    </div>
+
+    <div class="q-block" data-label="糖尿病の解説文">
+      <div class="q-title">糖尿病</div>
+      <div class="options">
+        <label><input type="radio" name="q1-2" class="js-primary" value="そのまま載せる" checked> そのまま載せる</label>
+        <label><input type="radio" name="q1-2" class="js-primary" value="少し書き直したい"> 少し書き直したい</label>
+        <label><input type="radio" name="q1-2" class="js-primary" value="今回は載せない"> 今回は載せない</label>
+        <label><input type="radio" name="q1-2" class="js-primary" value="わからない・相談したい"> わからない・相談したい</label>
+      </div>
+      <textarea class="js-note" name="q1-2-note" placeholder="任意メモ（空欄でOK）"></textarea>
+    </div>
+
+    <div class="q-block" data-label="脂質異常症の解説文">
+      <div class="q-title">脂質異常症</div>
+      <div class="options">
+        <label><input type="radio" name="q1-3" class="js-primary" value="そのまま載せる" checked> そのまま載せる</label>
+        <label><input type="radio" name="q1-3" class="js-primary" value="少し書き直したい"> 少し書き直したい</label>
+        <label><input type="radio" name="q1-3" class="js-primary" value="今回は載せない"> 今回は載せない</label>
+        <label><input type="radio" name="q1-3" class="js-primary" value="わからない・相談したい"> わからない・相談したい</label>
+      </div>
+      <textarea class="js-note" name="q1-3-note" placeholder="任意メモ（空欄でOK）"></textarea>
+    </div>
+
+    <div class="q-block" data-label="高尿酸血症の解説文">
+      <div class="q-title">高尿酸血症</div>
+      <div class="options">
+        <label><input type="radio" name="q1-4" class="js-primary" value="そのまま載せる" checked> そのまま載せる</label>
+        <label><input type="radio" name="q1-4" class="js-primary" value="少し書き直したい"> 少し書き直したい</label>
+        <label><input type="radio" name="q1-4" class="js-primary" value="今回は載せない"> 今回は載せない</label>
+        <label><input type="radio" name="q1-4" class="js-primary" value="わからない・相談したい"> わからない・相談したい</label>
+      </div>
+      <textarea class="js-note" name="q1-4-note" placeholder="任意メモ（空欄でOK）"></textarea>
+    </div>
+
+    <div class="q-block" data-label="心不全の解説文">
+      <div class="q-title">心不全</div>
+      <div class="options">
+        <label><input type="radio" name="q1-5" class="js-primary" value="そのまま載せる" checked> そのまま載せる</label>
+        <label><input type="radio" name="q1-5" class="js-primary" value="少し書き直したい"> 少し書き直したい</label>
+        <label><input type="radio" name="q1-5" class="js-primary" value="今回は載せない"> 今回は載せない</label>
+        <label><input type="radio" name="q1-5" class="js-primary" value="わからない・相談したい"> わからない・相談したい</label>
+      </div>
+      <textarea class="js-note" name="q1-5-note" placeholder="任意メモ（空欄でOK）"></textarea>
+    </div>
+
+    <div class="q-block" data-label="虚血性心疾患（狭心症・心筋梗塞）の解説文">
+      <div class="q-title">虚血性心疾患（狭心症・心筋梗塞）</div>
+      <div class="options">
+        <label><input type="radio" name="q1-6" class="js-primary" value="そのまま載せる" checked> そのまま載せる</label>
+        <label><input type="radio" name="q1-6" class="js-primary" value="少し書き直したい"> 少し書き直したい</label>
+        <label><input type="radio" name="q1-6" class="js-primary" value="今回は載せない"> 今回は載せない</label>
+        <label><input type="radio" name="q1-6" class="js-primary" value="わからない・相談したい"> わからない・相談したい</label>
+      </div>
+      <textarea class="js-note" name="q1-6-note" placeholder="任意メモ（空欄でOK）"></textarea>
+    </div>
+
+    <div class="q-block" data-label="心房細動の解説文">
+      <div class="q-title">心房細動</div>
+      <div class="options">
+        <label><input type="radio" name="q1-7" class="js-primary" value="そのまま載せる" checked> そのまま載せる</label>
+        <label><input type="radio" name="q1-7" class="js-primary" value="少し書き直したい"> 少し書き直したい</label>
+        <label><input type="radio" name="q1-7" class="js-primary" value="今回は載せない"> 今回は載せない</label>
+        <label><input type="radio" name="q1-7" class="js-primary" value="わからない・相談したい"> わからない・相談したい</label>
+      </div>
+      <textarea class="js-note" name="q1-7-note" placeholder="任意メモ（空欄でOK）"></textarea>
+    </div>
+
+    <div class="q-block" data-label="下肢閉塞性動脈硬化症の解説文">
+      <div class="q-title">下肢閉塞性動脈硬化症</div>
+      <div class="options">
+        <label><input type="radio" name="q1-8" class="js-primary" value="そのまま載せる" checked> そのまま載せる</label>
+        <label><input type="radio" name="q1-8" class="js-primary" value="少し書き直したい"> 少し書き直したい</label>
+        <label><input type="radio" name="q1-8" class="js-primary" value="今回は載せない"> 今回は載せない</label>
+        <label><input type="radio" name="q1-8" class="js-primary" value="わからない・相談したい"> わからない・相談したい</label>
+      </div>
+      <textarea class="js-note" name="q1-8-note" placeholder="任意メモ（空欄でOK）"></textarea>
+    </div>
+
+    <div class="q-block" data-label="アレルギー性鼻炎・花粉症の解説文">
+      <div class="q-title">アレルギー性鼻炎・花粉症</div>
+      <div class="options">
+        <label><input type="radio" name="q1-9" class="js-primary" value="そのまま載せる" checked> そのまま載せる</label>
+        <label><input type="radio" name="q1-9" class="js-primary" value="少し書き直したい"> 少し書き直したい</label>
+        <label><input type="radio" name="q1-9" class="js-primary" value="今回は載せない"> 今回は載せない</label>
+        <label><input type="radio" name="q1-9" class="js-primary" value="わからない・相談したい"> わからない・相談したい</label>
+      </div>
+      <textarea class="js-note" name="q1-9-note" placeholder="任意メモ（空欄でOK）"></textarea>
+    </div>
+
+    <div class="q-block" data-label="睡眠時無呼吸症候群の解説文">
+      <div class="q-title">睡眠時無呼吸症候群</div>
+      <div class="options">
+        <label><input type="radio" name="q1-10" class="js-primary" value="そのまま載せる" checked> そのまま載せる</label>
+        <label><input type="radio" name="q1-10" class="js-primary" value="少し書き直したい"> 少し書き直したい</label>
+        <label><input type="radio" name="q1-10" class="js-primary" value="今回は載せない"> 今回は載せない</label>
+        <label><input type="radio" name="q1-10" class="js-primary" value="わからない・相談したい"> わからない・相談したい</label>
+      </div>
+      <textarea class="js-note" name="q1-10-note" placeholder="任意メモ（空欄でOK）"></textarea>
+    </div>
+
+    <!-- 2 -->
+    <h2 class="section-title">2. 新しく載せる項目</h2>
+    <p class="section-desc">今のホームページには無い項目です。載せる場合、開院のタイミングから出すか、後からでよいかを教えてください。</p>
+
+    <div class="q-block" data-label="消化器（胃痛・胸やけ・逆流性食道炎・ピロリ菌など）">
+      <div class="q-title">消化器（胃痛・胸やけ・逆流性食道炎・ピロリ菌など）</div>
+      <div class="options">
+        <label><input type="radio" name="q2-1" class="js-primary" value="開院のときから載せたい"> 開院のときから載せたい</label>
+        <label><input type="radio" name="q2-1" class="js-primary" value="将来的に載せたい"> 将来的に載せたい</label>
+        <label><input type="radio" name="q2-1" class="js-primary" value="載せない"> 載せない</label>
+        <label><input type="radio" name="q2-1" class="js-primary" value="わからない・相談したい" checked> わからない・相談したい</label>
+      </div>
+    </div>
+
+    <div class="q-block" data-label="甲状腺疾患">
+      <div class="q-title">甲状腺疾患</div>
+      <div class="options">
+        <label><input type="radio" name="q2-2" class="js-primary" value="開院のときから載せたい"> 開院のときから載せたい</label>
+        <label><input type="radio" name="q2-2" class="js-primary" value="将来的に載せたい"> 将来的に載せたい</label>
+        <label><input type="radio" name="q2-2" class="js-primary" value="載せない"> 載せない</label>
+        <label><input type="radio" name="q2-2" class="js-primary" value="わからない・相談したい"> わからない・相談したい</label>
+      </div>
+    </div>
+
+    <div class="q-block" data-label="喘息・長引く咳">
+      <div class="q-title">喘息・長引く咳</div>
+      <div class="options">
+        <label><input type="radio" name="q2-3" class="js-primary" value="開院のときから載せたい"> 開院のときから載せたい</label>
+        <label><input type="radio" name="q2-3" class="js-primary" value="将来的に載せたい"> 将来的に載せたい</label>
+        <label><input type="radio" name="q2-3" class="js-primary" value="載せない"> 載せない</label>
+        <label><input type="radio" name="q2-3" class="js-primary" value="わからない・相談したい"> わからない・相談したい</label>
+      </div>
+    </div>
+
+    <div class="q-block" data-label="感染症（インフルエンザ・新型コロナなど）">
+      <div class="q-title">感染症（インフルエンザ・新型コロナなど）</div>
+      <div class="options">
+        <label><input type="radio" name="q2-4" class="js-primary" value="開院のときから載せたい"> 開院のときから載せたい</label>
+        <label><input type="radio" name="q2-4" class="js-primary" value="将来的に載せたい"> 将来的に載せたい</label>
+        <label><input type="radio" name="q2-4" class="js-primary" value="載せない"> 載せない</label>
+        <label><input type="radio" name="q2-4" class="js-primary" value="わからない・相談したい"> わからない・相談したい</label>
+      </div>
+    </div>
+
+    <div class="q-block" data-label="動脈硬化">
+      <div class="q-title">動脈硬化</div>
+      <div class="options">
+        <label><input type="radio" name="q2-5" class="js-primary" value="開院のときから載せたい"> 開院のときから載せたい</label>
+        <label><input type="radio" name="q2-5" class="js-primary" value="将来的に載せたい"> 将来的に載せたい</label>
+        <label><input type="radio" name="q2-5" class="js-primary" value="載せない"> 載せない</label>
+        <label><input type="radio" name="q2-5" class="js-primary" value="わからない・相談したい"> わからない・相談したい</label>
+      </div>
+    </div>
+
+    <div class="q-block" data-label="肥満症">
+      <div class="q-title">肥満症</div>
+      <div class="options">
+        <label><input type="radio" name="q2-6" class="js-primary" value="開院のときから載せたい"> 開院のときから載せたい</label>
+        <label><input type="radio" name="q2-6" class="js-primary" value="将来的に載せたい"> 将来的に載せたい</label>
+        <label><input type="radio" name="q2-6" class="js-primary" value="載せない"> 載せない</label>
+        <label><input type="radio" name="q2-6" class="js-primary" value="わからない・相談したい"> わからない・相談したい</label>
+      </div>
+    </div>
+
+    <div class="q-block" data-label="禁煙外来">
+      <div class="q-title">禁煙外来</div>
+      <div class="options">
+        <label><input type="radio" name="q2-7" class="js-primary" value="開院のときから載せたい"> 開院のときから載せたい</label>
+        <label><input type="radio" name="q2-7" class="js-primary" value="将来的に載せたい"> 将来的に載せたい</label>
+        <label><input type="radio" name="q2-7" class="js-primary" value="載せない"> 載せない</label>
+        <label><input type="radio" name="q2-7" class="js-primary" value="わからない・相談したい" checked> わからない・相談したい</label>
+      </div>
+    </div>
+
+    <div class="q-block" data-label="物忘れ（もの忘れ外来）">
+      <div class="q-title">物忘れ（もの忘れ外来）</div>
+      <div class="options">
+        <label><input type="radio" name="q2-8" class="js-primary" value="開院のときから載せたい"> 開院のときから載せたい</label>
+        <label><input type="radio" name="q2-8" class="js-primary" value="将来的に載せたい"> 将来的に載せたい</label>
+        <label><input type="radio" name="q2-8" class="js-primary" value="載せない"> 載せない</label>
+        <label><input type="radio" name="q2-8" class="js-primary" value="わからない・相談したい" checked> わからない・相談したい</label>
+      </div>
+    </div>
+
+    <!-- 3 -->
+    <h2 class="section-title">3. 消化器内科を標榜するか</h2>
+    <p class="section-desc">事実としてお伝えすると、近隣では内視鏡を掲げる医院が複数あります。やる・やらないを今この場で決めていただく必要はありません。</p>
+    <div class="q-block" data-label="消化器内科を標榜するか">
+      <div class="q-title">消化器内科を標榜しますか</div>
+      <div class="options">
+        <label><input type="radio" name="q3" class="js-primary" value="標榜する"> 標榜する</label>
+        <label><input type="radio" name="q3" class="js-primary" value="標榜しない"> 標榜しない</label>
+        <label><input type="radio" name="q3" class="js-primary" value="迷っている" checked> 迷っている</label>
+        <label><input type="radio" name="q3" class="js-primary" value="わからない・相談したい"> わからない・相談したい</label>
+      </div>
+      <textarea class="js-note" name="q3-note" placeholder="補足があればどうぞ（空欄でOK）"></textarea>
+    </div>
+
+    <!-- 4 -->
+    <h2 class="section-title">4. どんな患者さんに来てほしいか</h2>
+    <p class="section-desc">「ホームページに何を載せるか」ではなく、どんな症状・お悩みの患者さんに一番来てほしいかを教えてください。</p>
+    <div class="q-block" data-label="来てほしい患者像">
+      <div class="q-title">来てほしい患者さんのイメージ</div>
+      <textarea class="js-primary" name="q4" rows="3" placeholder="例：動悸・胸痛・息切れが気になる方、健診で数値を指摘された方 など（空欄でOK）"></textarea>
+      <label style="margin-top:10px;"><input type="checkbox" class="js-primary" name="q4-unsure" value="わからない・相談したい"> わからない・相談したい</label>
+    </div>
+
+    <!-- 5 -->
+    <h2 class="section-title">5. 健診・予防接種</h2>
+    <p class="section-desc">対応する健診の種類と、取り扱うワクチンをチェックしてください（複数選択可）。</p>
+
+    <div class="q-block" data-label="対応する健診">
+      <div class="q-title">対応する健診</div>
+      <div class="options">
+        <label><input type="checkbox" class="js-primary" name="q5-1-a" value="特定健診（区民健診）"> 特定健診（区民健診）</label>
+        <label><input type="checkbox" class="js-primary" name="q5-1-b" value="後期高齢者健診"> 後期高齢者健診</label>
+        <label><input type="checkbox" class="js-primary" name="q5-1-c" value="各種企業健診"> 各種企業健診</label>
+        <label><input type="checkbox" class="js-primary" name="q5-1-d" value="人間ドック"> 人間ドック</label>
+        <label><input type="checkbox" class="js-primary" name="q5-1-e" value="その他"> その他</label>
+        <label><input type="checkbox" class="js-primary" name="q5-1-f" value="わからない・相談したい"> わからない・相談したい</label>
+      </div>
+    </div>
+
+    <div class="q-block" data-label="取り扱うワクチン">
+      <div class="q-title">取り扱うワクチン</div>
+      <div class="options">
+        <label><input type="checkbox" class="js-primary" name="q5-2-a" value="インフルエンザ"> インフルエンザ</label>
+        <label><input type="checkbox" class="js-primary" name="q5-2-b" value="新型コロナ"> 新型コロナ</label>
+        <label><input type="checkbox" class="js-primary" name="q5-2-c" value="肺炎球菌"> 肺炎球菌</label>
+        <label><input type="checkbox" class="js-primary" name="q5-2-d" value="帯状疱疹"> 帯状疱疹</label>
+        <label><input type="checkbox" class="js-primary" name="q5-2-e" value="麻疹風疹（MR）"> 麻疹風疹（MR）</label>
+        <label><input type="checkbox" class="js-primary" name="q5-2-f" value="その他"> その他</label>
+        <label><input type="checkbox" class="js-primary" name="q5-2-g" value="わからない・相談したい"> わからない・相談したい</label>
+      </div>
+    </div>
+
+    <!-- 6 -->
+    <h2 class="section-title">6. 検査・医療機器</h2>
+    <p class="section-desc">導入予定の機器にチェックしてください。型番などは分からなくて大丈夫です。写真を撮って送っていただければ、私どもで転記します。</p>
+    <div class="q-block" data-label="検査・医療機器">
+      <div class="q-title">導入予定の検査・機器</div>
+      <div class="options">
+        <label><input type="checkbox" class="js-primary" name="q6-a" value="心電図"> 心電図</label>
+        <label><input type="checkbox" class="js-primary" name="q6-b" value="24時間心電図（ホルター）"> 24時間心電図（ホルター）</label>
+        <label><input type="checkbox" class="js-primary" name="q6-c" value="レントゲン"> レントゲン</label>
+        <label><input type="checkbox" class="js-primary" name="q6-d" value="エコー（心臓・腹部・甲状腺・頸動脈）"> エコー（心臓・腹部・甲状腺・頸動脈）</label>
+        <label><input type="checkbox" class="js-primary" name="q6-e" value="睡眠時無呼吸検査"> 睡眠時無呼吸検査</label>
+        <label><input type="checkbox" class="js-primary" name="q6-f" value="HbA1c迅速検査"> HbA1c迅速検査</label>
+        <label><input type="checkbox" class="js-primary" name="q6-g" value="その他"> その他</label>
+        <label><input type="checkbox" class="js-primary" name="q6-h" value="わからない・相談したい"> わからない・相談したい</label>
+      </div>
+      <textarea class="js-note" name="q6-note" placeholder="その他の機器や補足（写真の説明など。空欄でOK）"></textarea>
+    </div>
+
+    <!-- 7 -->
+    <h2 class="section-title">7. 訪問診療をやるか</h2>
+    <div class="q-block" data-label="訪問診療の実施">
+      <div class="q-title">訪問診療・在宅診療をやりますか</div>
+      <div class="options">
+        <label><input type="radio" name="q7" class="js-primary" value="やる"> やる</label>
+        <label><input type="radio" name="q7" class="js-primary" value="やらない"> やらない</label>
+        <label><input type="radio" name="q7" class="js-primary" value="検討中"> 検討中</label>
+        <label><input type="radio" name="q7" class="js-primary" value="わからない・相談したい" checked> わからない・相談したい</label>
+      </div>
+    </div>
+
+    <!-- 8 -->
+    <h2 class="section-title">8. 内科と眼科の同時受診の打ち出し</h2>
+    <p class="section-desc">近隣で内科と眼科を併設している医院は見当たりませんでした。糖尿病網膜症や高血圧性眼底変化など、内科と眼科で一体的に診ていける例があります。これを前面に出してよいか教えてください。</p>
+    <div class="q-block" data-label="内科×眼科の同時受診の打ち出し">
+      <div class="q-title">内科と眼科の同時受診を前面に出してよいですか</div>
+      <div class="options">
+        <label><input type="radio" name="q8" class="js-primary" value="前面に出してよい"> 前面に出してよい</label>
+        <label><input type="radio" name="q8" class="js-primary" value="控えめにしたい"> 控えめにしたい</label>
+        <label><input type="radio" name="q8" class="js-primary" value="まだ判断できない" checked> まだ判断できない</label>
+        <label><input type="radio" name="q8" class="js-primary" value="わからない・相談したい"> わからない・相談したい</label>
+      </div>
+      <textarea class="js-note" name="q8-note" placeholder="補足（陽夏先生と相談したい点など。空欄でOK）"></textarea>
+    </div>
+
+    <!-- 9 -->
+    <h2 class="section-title">9. 自費診療</h2>
+    <p class="section-desc">「やる／やらない」ではなく、今後3年でやる可能性があるものにチェックをつけてください。</p>
+    <div class="q-block" data-label="自費診療メニュー">
+      <div class="q-title">今後3年でやる可能性があるもの</div>
+      <div class="options">
+        <label><input type="checkbox" class="js-primary" name="q9-a" value="禁煙外来"> 禁煙外来</label>
+        <label><input type="checkbox" class="js-primary" name="q9-b" value="自費予防接種"> 自費予防接種</label>
+        <label><input type="checkbox" class="js-primary" name="q9-c" value="自費健診（人間ドック等）"> 自費健診（人間ドック等）</label>
+        <label><input type="checkbox" class="js-primary" name="q9-d" value="点滴・注射メニュー"> 点滴・注射メニュー</label>
+        <label><input type="checkbox" class="js-primary" name="q9-e" value="その他"> その他</label>
+        <label><input type="checkbox" class="js-primary" name="q9-f" value="わからない・相談したい" checked> わからない・相談したい</label>
+      </div>
+    </div>
+
+    <!-- 10 -->
+    <h2 class="section-title">10. お知らせの更新</h2>
+    <p class="section-desc">「毎月書けますか」ではなく、無理なく続けられる回数を選んでください。</p>
+    <div class="q-block" data-label="お知らせの更新頻度">
+      <div class="q-title">年に何回なら無理なく書けますか</div>
+      <div class="options">
+        <label><input type="radio" name="q10" class="js-primary" value="0回（更新しない）"> 0回（更新しない）</label>
+        <label><input type="radio" name="q10" class="js-primary" value="年2回程度"> 年2回程度</label>
+        <label><input type="radio" name="q10" class="js-primary" value="年6回程度"> 年6回程度</label>
+        <label><input type="radio" name="q10" class="js-primary" value="年12回（毎月）程度"> 年12回（毎月）程度</label>
+        <label><input type="radio" name="q10" class="js-primary" value="わからない・相談したい" checked> わからない・相談したい</label>
+      </div>
+    </div>
+
+    <!-- 11 -->
+    <h2 class="section-title">11. ご挨拶への一言</h2>
+    <p class="section-desc">開業にあたっての想いを2〜3行で。無ければ私どもで下書きしますので、空欄で結構です。</p>
+    <div class="q-block" data-label="ご挨拶への一言">
+      <div class="q-title">開業にあたっての一言</div>
+      <textarea class="js-primary" name="q11" rows="3" placeholder="空欄の場合は私どもで下書きします"></textarea>
+      <label style="margin-top:10px;"><input type="checkbox" class="js-primary" name="q11-unsure" value="わからない・相談したい"> わからない・相談したい</label>
+    </div>
+
+    <!-- 12 -->
+    <h2 class="section-title">12. その他・ご相談</h2>
+    <div class="q-block" data-label="その他・ご相談">
+      <div class="q-title">その他、気になること・ご相談があれば</div>
+      <textarea class="js-primary" name="q12" rows="3" placeholder="何でもご記入ください（空欄でOK）"></textarea>
+      <label style="margin-top:10px;"><input type="checkbox" class="js-primary" name="q12-unsure" value="わからない・相談したい"> わからない・相談したい</label>
+    </div>
+
+  </form>
+
+  <div class="btn-row no-print">
+    <button type="button" class="btn-danger" id="clearBtn">入力をすべて消す</button>
+  </div>
+
+  <div class="copy-section">
+    <h3>記入内容をコピー</h3>
+    <p>ボタンを押すと、下の欄に整形されたテキストが表示され、コピーされます。うまくコピーできない場合は、下の欄を直接タップして全選択→コピーしてください。</p>
+    <div class="btn-row" style="margin:0 0 10px;">
+      <button type="button" class="btn-primary" id="copyBtn">記入内容をコピー</button>
+    </div>
+    <div class="toast" id="toast">コピーしました</div>
+    <textarea id="copyOutput" readonly rows="10"></textarea>
+  </div>
+
+  <div class="submit-section" id="submitSection" style="display:none;">
+    <h3>記入内容を送信する</h3>
+    <p>ボタンを押すと、この内容がそのまま運営チームへ送信されます。送信後もご自身で内容を修正いただけます。</p>
+    <div class="btn-row" style="margin:0 0 10px;">
+      <button type="button" class="btn-primary" id="submitBtn">記入内容を送信する</button>
+    </div>
+    <div class="submit-status" id="submitStatus"></div>
+    <div class="doc-link-box" id="docLinkBox">
+      <p>送信済みの内容はこちらのドキュメントでご確認いただけます。</p>
+      <p><a href="#" id="docLinkAnchor" target="_blank" rel="noopener"></a></p>
+      <p>こちらを開くと、ご自身で文章を直していただけます。</p>
+    </div>
+  </div>
+
+  <footer>自由が丘さくらクリニック 内科ページ 記入シート</footer>
+
+</div>
+
+<script>
+// ====== 送信設定（GASデプロイ後にSUBMIT_URLだけ書き換える） ======
+// SUBMIT_URL が空文字のあいだは送信ボタンを表示せず、従来のコピー方式のまま動作する。
+const SUBMIT_URL = ''; // ここにGASウェブアプリのURLを貼る（空なら送信ボタンは非表示）
+const SUBMIT_TOKEN = 'jgs-2026-k4f9d2';
+const FORM_ID = 'naika'; // 眼科側は 'ganka'
+const DOCTOR_NAME = '荒井研';
+
+(function(){
+  var STORAGE_KEY = 'sakura_genko_naika_v1';
+  var form = document.getElementById('mainForm');
+  var qBlocks = Array.prototype.slice.call(document.querySelectorAll('.q-block'));
+  var totalQuestions = qBlocks.length;
+  var progressText = document.getElementById('progressText');
+  var progressFill = document.getElementById('progressFill');
+  var saveNotice = document.getElementById('saveNotice');
+  var restoreBanner = document.getElementById('restoreBanner');
+  var clearBtn = document.getElementById('clearBtn');
+  var copyBtn = document.getElementById('copyBtn');
+  var copyOutput = document.getElementById('copyOutput');
+  var toast = document.getElementById('toast');
+
+  function isAnswered(block){
+    var primaries = block.querySelectorAll('.js-primary');
+    for(var i=0;i<primaries.length;i++){
+      var el = primaries[i];
+      if(el.type === 'radio' || el.type === 'checkbox'){
+        if(el.checked) return true;
+      } else {
+        if(el.value && el.value.trim().length > 0) return true;
+      }
+    }
+    return false;
+  }
+
+  function updateProgress(){
+    var answered = qBlocks.filter(isAnswered).length;
+    progressText.textContent = '回答済み ' + answered + ' / ' + totalQuestions + ' 問';
+    if(progressFill){
+      var pct = totalQuestions ? (answered / totalQuestions * 100) : 0;
+      progressFill.style.width = pct + '%';
+    }
+  }
+
+  function serialize(){
+    var data = {};
+    var els = form.querySelectorAll('input[name], textarea[name]');
+    els.forEach(function(el){
+      if(el.type === 'radio'){
+        if(el.checked) data[el.name] = el.value;
+      } else if(el.type === 'checkbox'){
+        data[el.name] = el.checked;
+      } else {
+        data[el.name] = el.value;
+      }
+    });
+    return data;
+  }
+
+  function save(){
+    try{
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(serialize()));
+      var now = new Date();
+      var h = now.getHours();
+      var m = now.getMinutes();
+      saveNotice.textContent = h + '時' + (m < 10 ? '0' + m : m) + '分に自動保存しました';
+    }catch(e){}
+  }
+
+  function restore(){
+    var raw;
+    try{ raw = localStorage.getItem(STORAGE_KEY); }catch(e){ raw = null; }
+    if(!raw) return;
+    var data;
+    try{ data = JSON.parse(raw); }catch(e){ return; }
+    if(!data || Object.keys(data).length === 0) return;
+
+    var hasValue = false;
+    Object.keys(data).forEach(function(name){
+      var val = data[name];
+      var els = form.querySelectorAll('[name="' + cssEscape(name) + '"]');
+      els.forEach(function(el){
+        if(el.type === 'radio'){
+          if(el.value === val){ el.checked = true; hasValue = true; }
+        } else if(el.type === 'checkbox'){
+          el.checked = !!val;
+          if(val) hasValue = true;
+        } else {
+          if(val){ el.value = val; hasValue = true; }
+        }
+      });
+    });
+    if(hasValue){
+      restoreBanner.style.display = 'block';
+    }
+  }
+
+  function cssEscape(str){
+    return str.replace(/(["\\\]\[])/g, '\\$1');
+  }
+
+  function getAnswerText(block){
+    var primaries = block.querySelectorAll('.js-primary');
+    var parts = [];
+    primaries.forEach(function(el){
+      if(el.type === 'radio' || el.type === 'checkbox'){
+        if(el.checked) parts.push(el.value);
+      } else {
+        var v = el.value.trim();
+        if(v) parts.push(v);
+      }
+    });
+    var answer = parts.length ? parts.join('、') : '（未回答）';
+    var note = block.querySelector('.js-note');
+    if(note && note.value && note.value.trim()){
+      answer += '\n      備考: ' + note.value.trim();
+    }
+    return answer;
+  }
+
+  function buildCopyText(){
+    var lines = [];
+    lines.push('自由が丘さくらクリニック 内科ページ 掲載内容 記入シート（荒井先生）');
+    lines.push('作成日時: ' + new Date().toLocaleString('ja-JP'));
+    lines.push('====================================');
+    var sections = document.querySelectorAll('.section-title');
+    sections.forEach(function(sec){
+      lines.push('');
+      lines.push('■ ' + sec.textContent);
+      var node = sec.nextElementSibling;
+      while(node && !node.classList.contains('section-title')){
+        if(node.classList.contains('q-block')){
+          var label = node.getAttribute('data-label') || '';
+          lines.push('・' + label + '：' + getAnswerText(node));
+        }
+        node = node.nextElementSibling;
+      }
+    });
+    return lines.join('\n');
+  }
+
+  function doCopy(){
+    var text = buildCopyText();
+    copyOutput.value = text;
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(function(){
+        showToast();
+      }).catch(function(){
+        copyOutput.focus();
+        copyOutput.select();
+      });
+    } else {
+      copyOutput.focus();
+      copyOutput.select();
+    }
+  }
+
+  function showToast(){
+    toast.style.display = 'block';
+    toast.textContent = 'コピーしました';
+    setTimeout(function(){ toast.style.display = 'none'; }, 2500);
+  }
+
+  form.addEventListener('input', function(){ save(); updateProgress(); });
+  form.addEventListener('change', function(){ save(); updateProgress(); });
+
+  clearBtn.addEventListener('click', function(){
+    if(window.confirm('入力をすべて消しますか？この操作は元に戻せません。')){
+      try{ localStorage.removeItem(STORAGE_KEY); }catch(e){}
+      form.reset();
+      restoreBanner.style.display = 'none';
+      saveNotice.textContent = '';
+      updateProgress();
+    }
+  });
+
+  copyBtn.addEventListener('click', doCopy);
+
+  // ---- 送信機能（SUBMIT_URL が設定されているときだけ有効化） ----
+  var DOC_LINK_KEY = STORAGE_KEY + '_doclink';
+  var submitSection = document.getElementById('submitSection');
+  var submitBtn = document.getElementById('submitBtn');
+  var submitStatus = document.getElementById('submitStatus');
+  var docLinkBox = document.getElementById('docLinkBox');
+  var docLinkAnchor = document.getElementById('docLinkAnchor');
+
+  function setSubmitStatus(text, type){
+    submitStatus.textContent = text || '';
+    submitStatus.className = 'submit-status' + (type ? ' ' + type : '');
+  }
+
+  function showDocLink(url){
+    if(!url) return;
+    docLinkBox.style.display = 'block';
+    docLinkAnchor.href = url;
+    docLinkAnchor.textContent = url;
+  }
+
+  function restoreDocLink(){
+    var url;
+    try{ url = localStorage.getItem(DOC_LINK_KEY); }catch(e){ url = null; }
+    if(url) showDocLink(url);
+  }
+
+  function scrollToCopySection(){
+    var copySection = document.querySelector('.copy-section');
+    if(copySection && copySection.scrollIntoView){
+      copySection.scrollIntoView({behavior:'smooth', block:'start'});
+    }
+  }
+
+  function doSubmit(){
+    if(!window.confirm('この内容を送信します。送信後もご自身で修正できます。よろしいですか？')) return;
+
+    setSubmitStatus('', '');
+    submitBtn.disabled = true;
+    submitBtn.textContent = '送信しています…';
+
+    var payload = {
+      token: SUBMIT_TOKEN,
+      formId: FORM_ID,
+      doctor: DOCTOR_NAME,
+      submittedAt: new Date().toISOString(),
+      text: buildCopyText(),
+      answers: serialize()
+    };
+
+    fetch(SUBMIT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(payload)
+    }).then(function(res){
+      return res.json();
+    }).then(function(data){
+      if(!data || !data.ok){ throw new Error('server-rejected'); }
+      setSubmitStatus('送信しました', 'success');
+      if(data.docUrl){
+        try{ localStorage.setItem(DOC_LINK_KEY, data.docUrl); }catch(e){}
+        showDocLink(data.docUrl);
+      }
+    }).catch(function(){
+      setSubmitStatus('うまく送信できませんでした。お手数ですが下の「記入内容をコピー」を押して、メールに貼り付けてお送りください。', 'error');
+      scrollToCopySection();
+    }).finally(function(){
+      submitBtn.disabled = false;
+      submitBtn.textContent = '記入内容を送信する';
+    });
+  }
+
+  function initSubmitUI(){
+    if(SUBMIT_URL && SUBMIT_URL.trim().length > 0){
+      submitSection.style.display = 'block';
+      restoreDocLink();
+      submitBtn.addEventListener('click', doSubmit);
+    }
+  }
+
+  restore();
+  updateProgress();
+  copyOutput.value = buildCopyText();
+  initSubmitUI();
+})();
+</script>
+
+</body>
+</html>
