@@ -1,0 +1,56 @@
+# =============================================================
+# SaNC Project — .gitignore security template
+# Copy this to any git-managed subdirectory as ".gitignore"
+# =============================================================
+
+# --- Secrets & credentials ---
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+*.keystore
+*secret*.json
+*credential*.json
+*credentials*.json
+service-account*.json
+firebase-adminsdk*.json
+token.json
+access_token.json
+google-credentials.json
+gcp-key.json
+aws-credentials
+.aws/credentials
+
+# --- Editor / OS ---
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.vscode/settings.json
+
+# --- Node ---
+node_modules/
+.npm/
+*.log
+npm-debug.log*
+
+# --- Python ---
+__pycache__/
+*.pyc
+.venv/
+venv/
+.python-version
+
+# --- Build artifacts ---
+dist/
+build/
+.next/
+.nuxt/
+
+# --- Misc ---
+.vercel
+.netlify
